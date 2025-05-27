@@ -1,9 +1,20 @@
-from agents import Runner, trace, gen_trace_id
+from agents import OpenAIChatCompletionsModel, Runner, trace, gen_trace_id
 from search_agent import search_agent
 from planner_agent import planner_agent, WebSearchItem, WebSearchPlan
 from writer_agent import writer_agent, ReportData
 from email_agent import email_agent
 import asyncio
+from openai import AsyncAzureOpenAI
+from dotenv import load_dotenv
+import os
+
+load_dotenv(override=True)
+azure_openai_client=AsyncAzureOpenAI(
+    api_key=os.getenv('AZURE_OPENAI_API_KEY'),  
+    api_version=os.getenv("AZURE_OPENAI_API_VERSION_LATEST"),
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
+)
+azure_openai_model= OpenAIChatCompletionsModel(model=os.getenv('AZURE_OPENAI_MODEL'), openai_client=azure_openai_client)
 
 class ResearchManager:
 
