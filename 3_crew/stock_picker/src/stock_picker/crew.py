@@ -1,4 +1,4 @@
-from crewai import Agent, Crew, Process, Task
+from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool
 from pydantic import BaseModel, Field
@@ -7,6 +7,14 @@ from .tools.push_tool import PushNotificationTool
 from crewai.memory import LongTermMemory, ShortTermMemory, EntityMemory
 from crewai.memory.storage.rag_storage import RAGStorage
 from crewai.memory.storage.ltm_sqlite_storage import LTMSQLiteStorage
+import os
+
+azure_llm = LLM(
+        model="azure/gpt-4o-mini",
+        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+        base_url=os.getenv("AZURE_OPENAI_ENDPOINT"),
+        api_version=os.getenv("AZURE_OPENAI_API_VERSION")
+    )
 
 class TrendingCompany(BaseModel):
     """ A company that is in the news and attracting attention """
@@ -40,17 +48,17 @@ class StockPicker():
     @agent
     def trending_company_finder(self) -> Agent:
         return Agent(config=self.agents_config['trending_company_finder'],
-                     tools=[SerperDevTool()], memory=True)
+                     tools=[SerperDevTool()], memory=True, llm=azure_llm)
     
     @agent
     def financial_researcher(self) -> Agent:
         return Agent(config=self.agents_config['financial_researcher'], 
-                     tools=[SerperDevTool()])
+                     tools=[SerperDevTool()], memory=False, llm=azure_llm)
 
     @agent
     def stock_picker(self) -> Agent:
         return Agent(config=self.agents_config['stock_picker'], 
-                     tools=[PushNotificationTool()], memory=True)
+                     tools=[PushNotificationTool()], memory=False, llm=azure_llm)
     
     @task
     def find_trending_companies(self) -> Task:
@@ -73,15 +81,26 @@ class StockPicker():
         )
     
 
-
-
     @crew
     def crew(self) -> Crew:
         """Creates the StockPicker crew"""
 
+        azure_embed_config = {
+            "provider": "azure",
+            "config": {
+                "model": "text-embedding-3-small",
+                "api_key": os.getenv("AZURE_EMBEDDING_API_KEY"),
+                "api_base": "https://llm-learning-app.openai.azure.com",
+                "api_version": "2024-12-01-preview",
+                "deployment": "text-embedding-3-small",
+                "api_type": "azure"
+            }
+        }
+
         manager = Agent(
             config=self.agents_config['manager'],
-            allow_delegation=True
+            allow_delegation=True,
+            llm=azure_llm
         )
             
         return Crew(
@@ -100,24 +119,15 @@ class StockPicker():
             # Short-term memory for current context using RAG
             short_term_memory = ShortTermMemory(
                 storage = RAGStorage(
-                        embedder_config={
-                            "provider": "openai",
-                            "config": {
-                                "model": 'text-embedding-3-small'
-                            }
-                        },
+                        embedder_config=azure_embed_config,
                         type="short_term",
                         path="./memory/"
                     )
-                ),            # Entity memory for tracking key information about entities
+                ),            
+            # Entity memory for tracking key information about entities
             entity_memory = EntityMemory(
                 storage=RAGStorage(
-                    embedder_config={
-                        "provider": "openai",
-                        "config": {
-                            "model": 'text-embedding-3-small'
-                        }
-                    },
+                    embedder_config=azure_embed_config,
                     type="short_term",
                     path="./memory/"
                 )
