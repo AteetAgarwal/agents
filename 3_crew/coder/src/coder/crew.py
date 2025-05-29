@@ -1,11 +1,19 @@
-from crewai import Agent, Crew, Process, Task
+from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
+import os
 
 
 
 @CrewBase
 class Coder():
     """Coder crew"""
+
+    azure_llm = LLM(
+        model="azure/gpt-4o-mini",
+        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+        base_url=os.getenv("AZURE_OPENAI_ENDPOINT"),
+        api_version=os.getenv("AZURE_OPENAI_API_VERSION")
+    )
 
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
@@ -18,10 +26,11 @@ class Coder():
         return Agent(
             config=self.agents_config['coder'],
             verbose=True,
-            allow_code_execution=True,
-            code_execution_mode="safe",  # Uses Docker for safety
+            allow_code_execution=False,     # Disable code execution with docker
+            code_execution_mode="unsafe",  # Without Docker, use safe with Docker
             max_execution_time=30, 
-            max_retry_limit=3 
+            max_retry_limit=3,
+            llm=self.azure_llm
     )
 
 
