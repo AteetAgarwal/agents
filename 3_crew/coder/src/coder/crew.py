@@ -26,8 +26,8 @@ class Coder():
         return Agent(
             config=self.agents_config['coder'],
             verbose=True,
-            allow_code_execution=False,     # Disable code execution with docker
-            code_execution_mode="unsafe",  # Without Docker, use safe with Docker
+            allow_code_execution=True,     # Disable code execution with docker
+            code_execution_mode="safe",  # Without Docker, use safe with Docker
             max_execution_time=30, 
             max_retry_limit=3,
             llm=self.azure_llm
