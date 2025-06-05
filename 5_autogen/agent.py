@@ -1,9 +1,10 @@
 from autogen_core import MessageContext, RoutedAgent, message_handler
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.messages import TextMessage
-from autogen_ext.models.openai import OpenAIChatCompletionClient
+from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
 import messages
 import random
+import os
 
 
 class Agent(RoutedAgent):
@@ -26,7 +27,11 @@ class Agent(RoutedAgent):
 
     def __init__(self, name) -> None:
         super().__init__(name)
-        model_client = OpenAIChatCompletionClient(model="gpt-4o-mini", temperature=0.7)
+        model_client = AzureOpenAIChatCompletionClient(azure_deployment=os.getenv("AZURE_DEPLOYMENT_NAME"),
+                                                        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+                                                        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+                                                        api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+                                                        model=os.getenv("AZURE_OPENAI_MODEL"))
         self._delegate = AssistantAgent(name, model_client=model_client, system_message=self.system_message)
 
     @message_handler

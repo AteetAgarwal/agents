@@ -1,12 +1,13 @@
 from autogen_core import MessageContext, RoutedAgent, message_handler
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.messages import TextMessage
-from autogen_ext.models.openai import OpenAIChatCompletionClient
+from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
 import messages
 from autogen_core import TRACE_LOGGER_NAME
 import importlib
 import logging
 from autogen_core import AgentId
+import os
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(TRACE_LOGGER_NAME)
@@ -33,7 +34,12 @@ class Creator(RoutedAgent):
 
     def __init__(self, name) -> None:
         super().__init__(name)
-        model_client = OpenAIChatCompletionClient(model="gpt-4o-mini", temperature=1.0)
+        model_client = AzureOpenAIChatCompletionClient(azure_deployment=os.getenv("AZURE_DEPLOYMENT_NAME"),
+                                                        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+                                                        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+                                                        api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+                                                        model=os.getenv("AZURE_OPENAI_MODEL"),
+                                                        temperature=1.0)
         self._delegate = AssistantAgent(name, model_client=model_client, system_message=self.system_message)
 
     def get_user_prompt(self):

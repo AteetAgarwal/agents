@@ -1,28 +1,25 @@
-Flight Deals from JFK to LHR - June 2025:
+### Flight Deals from JFK to LHR - June 2025
 
-1. Airline: Virgin Atlantic
-   - Price: $497
-   - Non-stop
-   - In-flight amenities: meals, drinks, entertainment, WiFi
+1. **Virgin Atlantic**  
+   - **Departure:** JFK to LHR  
+   - **Price:** from $236  
+   - **Type:** One-way, non-stop  
+   - **Frequency:** 45 nonstop flights per week  
 
-2. Airline: JetBlue
-   - Price: $314
-   - Non-stop
-   - Booking available now
+2. **British Airways**  
+   - **Departure:** JFK to LHR  
+   - **Price:** from $236  
+   - **Type:** One-way, non-stop  
+   - **Additional Notes:** Connects to 160 cities across Europe  
 
-3. Airline: Delta
-   - Price: $239
-   - Non-stop
-   - Additional services: earns airline miles
+3. **Iberia**  
+   - **Departure:** JFK to LHR  
+   - **Price:** from $236  
+   - **Type:** One-way, non-stop  
 
-4. Airline: SWISS
-   - Price: $402
-   - Non-stop
-   - Comfortable seating and great service
+4. **Finnair**  
+   - **Departure:** JFK to LHR  
+   - **Price:** approx. $485  
+   - **Type:** One-way, non-stop  
 
-5. Airline: United Airlines
-   - Price: $450
-   - Non-stop
-   - Great onboard experience
-
-Best Deal: JetBlue at $314 for a non-stop flight from JFK to LHR. 
+**Note:** Prices are subject to change and availability. Recommended to book early to secure the best deals.
